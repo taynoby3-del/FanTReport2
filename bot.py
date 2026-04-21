@@ -13,20 +13,15 @@ from telegram.ext import (
 )
 from telegram.constants import ParseMode
 
-# ========== НАСТРОЙКИ ==========
 TOKEN = "8668763848:AAGinEdF76mgPwTsn7SltaaRgKw12yjnP14"
 DEVELOPER_ID = 8392862734
 DEVELOPER_NAME = "@error031"
 CHANNEL_LINK = "https://t.me/Fant1kKanal"
 CHANNEL_ID = "@Fant1kKanal"
 
-# Хранилище последнего сноса (в памяти, сбрасывается при перезапуске)
 last_snos = {}
-
-# Состояние для ввода своего числа
 CUSTOM_AMOUNT = 1
 
-# Цены ускорений за Telegram Stars
 SPEEDS = {
     "normal": {"name": "⚡ НОРМАЛЬНАЯ", "delay": 1.0, "price": 5},
     "fast": {"name": "🔥 БЫСТРАЯ", "delay": 0.5, "price": 8},
@@ -134,15 +129,9 @@ def shop_menu():
 def back_menu():
     return InlineKeyboardMarkup([[InlineKeyboardButton("◀️ НАЗАД", callback_data="menu")]])
 
-# ========== ПРОВЕРКА ПОДПИСКИ ==========
+# ========== ПРОВЕРКА ПОДПИСКИ (ВРЕМЕННО ОТКЛЮЧЕНА) ==========
 async def is_subscribed(user_id, context):
-    try:
-        chat_member = await context.bot.get_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
-        subscribed_statuses = ['member', 'creator', 'administrator', 'restricted']
-        return chat_member.status in subscribed_statuses
-    except Exception as e:
-        logging.error(f"Ошибка проверки подписки для {user_id}: {e}")
-        return False
+    return True  # временно всегда True
 
 # ========== МАГАЗИН УСКОРЕНИЙ ==========
 async def shop_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -403,12 +392,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(caption, reply_markup=main_menu())
         return
     
-    if not await is_subscribed(user_id, context):
-        await update.message.reply_text(
-            f"📢 ПОДПИШИТЕСЬ НА КАНАЛ!\n\n👉 {CHANNEL_LINK}\n\n✅ После подписки нажмите /start",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("📢 ПОДПИСАТЬСЯ", url=CHANNEL_LINK)]])
-        )
-        return
+    # ПРОВЕРКА ПОДПИСКИ ВРЕМЕННО ОТКЛЮЧЕНА
+    # if not await is_subscribed(user_id, context):
+    #     await update.message.reply_text(...)
+    #     return
     
     if "stats" not in context.user_data:
         context.user_data["stats"] = {"total_snos": 0, "total_success": 0, "total_errors": 0}
@@ -667,10 +654,8 @@ def run_web_in_thread():
 
 # ========== ЗАПУСК ==========
 if __name__ == "__main__":
-    # Запускаем веб-сервер в отдельном потоке (чтобы не блокировать бота)
     threading.Thread(target=run_web_in_thread, daemon=True).start()
     
-    # Запускаем бота напрямую (без лишних обёрток)
     app = Application.builder().token(TOKEN).build()
     
     app.add_handler(CommandHandler("start", start))
