@@ -13,7 +13,7 @@ from telegram.ext import (
 )
 from telegram.constants import ParseMode
 
-TOKEN = "8668763848:AAGinEdF76mgPwTsn7SltaaRgKw12yjnP14"
+TOKEN = "8727581428:AAH9BBuZMpML0BmPHnL-x3tDZdtK-qX7Vik"
 DEVELOPER_ID = 8392862734
 DEVELOPER_NAME = "@error031"
 CHANNEL_LINK = "https://t.me/Fant1kKanal"
